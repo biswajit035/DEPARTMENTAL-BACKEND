@@ -75,7 +75,7 @@ router.get("/image/:filename", (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ "msg": "Some error occured" });
+        res.status(500).send({ "msg": "Some error occured in the line" });
     }
 });
 
