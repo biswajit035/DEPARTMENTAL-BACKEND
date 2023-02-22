@@ -49,30 +49,30 @@ router.delete("/del/:id", (req, res) => {
 
 
 // show image in browsrer [/api/files/image/:filename]
-router.get("/image/:filename", (req, res) => {
+router.get("/image/:filename", async(req, res) => {
     try {
-        gfs.find({
-            filename: req.params.filename
-        }).toArray(async (err, files) => {
-            // check if files
-            if (!files || files.length === 0) {
-                return res.status(404).json({
-                    err: "no files exist in database"
-                });
-            }
+        // gfs.find({
+        //     filename: req.params.filename
+        // }).toArray(async (err, files) => {
+        //     // check if files
+        //     if (!files || files.length === 0) {
+        //         return res.status(404).json({
+        //             err: "no files exist in database"
+        //         });
+        //     }
             const image = await gfs.openDownloadStreamByName(req.params.filename);
 
-            let buffer = '';
-            image.on('data',(data)=>{
-                buffer += data.toString('base64');
-            })
-            image.on('end',()=>{
-                const imageBase64 = `data:image/jpeg;base64,${buffer}`;
-                res.json({ data: imageBase64 });
-            })
+            // let buffer = '';
+            // image.on('data',(data)=>{
+            //     buffer += data.toString('base64');
+            // })
+            // image.on('end',()=>{
+            //     const imageBase64 = `data:image/jpeg;base64,${buffer}`;
+            //     res.json({ data: imageBase64 });
+            // })
             // res.setHeader('Content-Type', 'image/jpeg');
-            // pdf.pipe(res);
-        });
+            image.pipe(res);
+        // });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured in the line" });
