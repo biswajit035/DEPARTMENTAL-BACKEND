@@ -3,7 +3,7 @@ const router = express.Router();
 const { upload } = require('../gridFs')
 
 
-const { teacher } = require('../model/Model')
+const { teacher } = require('../Model/model')
 
 
 router.get("/",(req,res)=>{
