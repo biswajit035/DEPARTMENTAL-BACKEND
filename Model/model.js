@@ -1,7 +1,7 @@
 const { conn } = require('../db')
 // const StudentSchema = require('../schema/StudentSchema')
 // const PlacementSchema = require('../schema/PlacementSchema')
-const teacherSchema = require('../schema/teacherSchema')
+const teacherSchema = require('../Schema/teacherSchema')
 const StudentSchema = require('../Schema/StudentSchema')
 const SyllabusSchema = require('../Schema/SyllabusSchema')
 const RoutineSchema = require('../Schema/RoutineSchema')
