@@ -71,7 +71,7 @@ router.get("/image/:filename", (req, res) => {
 });
 router.get('/imagelink/:filename', async (req, res) => {
     const filename = req.params.filename;
-    const imageUrl = `${req.protocol}://${req.hostname}/files/image/${filename}`;
+    const imageUrl = `${req.protocol}://${req.hostname}/api/files/image/${filename}`;
 
     res.send(imageUrl);
 });
