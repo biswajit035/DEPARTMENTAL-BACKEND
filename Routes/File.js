@@ -69,6 +69,12 @@ router.get("/image/:filename", (req, res) => {
         res.status(500).send({ "msg": "Some error occured" });
     }
 });
+router.get('/imagelink/:filename', async (req, res) => {
+    const filename = req.params.filename;
+    const imageUrl = `${req.protocol}://${req.hostname}/files/image/${filename}`;
+
+    res.send(imageUrl);
+});
 
 
 // shoow named saved pdf: http://localhost:8000/files/:filename

@@ -22,8 +22,9 @@ router.post("/add", upload.single('file'), async (req, res) => {
             designation: req.body.desg,
             education: req.body.edu,
         })
-        console.log("teacher added");
-        res.json(response);
+        console.log(req.file);
+        // res.json(response);
+        res.json(req.file);
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
