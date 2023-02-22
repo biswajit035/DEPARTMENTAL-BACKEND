@@ -60,21 +60,25 @@ router.get("/image/:filename", (req, res) => {
                     err: "no files exist in database"
                 });
             }
-            const pdf = await gfs.openDownloadStreamByName(req.params.filename);
+            const image = await gfs.openDownloadStreamByName(req.params.filename);
+
+            let buffer = '';
+            image.on('data',(data)=>{
+                buffer += data.toString('base64');
+            })
+            image.on('end',()=>{
+                const imageBase64 = `data:image/jpeg;base64,${buffer}`;
+                res.json({ data: imageBase64 });
+            })
             // res.setHeader('Content-Type', 'image/jpeg');
-            pdf.pipe(res);
+            // pdf.pipe(res);
         });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
     }
 });
-router.get('/imagelink/:filename', async (req, res) => {
-    const filename = req.params.filename;
-    const imageUrl = `${req.protocol}://${req.hostname}/api/files/image/${filename}`;
 
-    res.send(imageUrl);
-});
 
 
 // shoow named saved pdf: http://localhost:8000/files/:filename
