@@ -49,6 +49,27 @@ router.delete("/del/:id", (req, res) => {
 
 
 // show image in browsrer [/api/files/image/:filename]
+router.get("/pdf/:filename", (req, res) => {
+    try {
+        gfs.find({
+            filename: req.params.filename
+        }).toArray(async (err, files) => {
+            // check if files
+            if (!files || files.length === 0) {
+                return res.status(404).json({
+                    err: "no files exist in"
+                });
+            }
+
+            const pdf = await gfs.openDownloadStreamByName(req.params.filename);
+            res.setHeader('Content-Type', 'application/pdf');
+            pdf.pipe(res);
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+});
 router.get("/image/:filename", (req, res) => {
     try {
         gfs.find({
@@ -62,7 +83,7 @@ router.get("/image/:filename", (req, res) => {
             }
 
             const pdf = await gfs.openDownloadStreamByName(req.params.filename);
-            // res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Type', 'image/jpeg');
             pdf.pipe(res);
         });
     } catch (error) {
