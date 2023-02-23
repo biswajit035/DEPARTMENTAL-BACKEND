@@ -62,7 +62,7 @@ router.get("/image/:filename", (req, res) => {
             }
 
             const pdf = await gfs.openDownloadStreamByName(req.params.filename);
-            res.setHeader('Content-Type', 'application/pdf');
+            // res.setHeader('Content-Type', 'application/pdf');
             pdf.pipe(res);
         });
     } catch (error) {
