@@ -13,8 +13,8 @@ router.get("/", (req, res) => {
 router.post("/add", upload.single('file'), async (req, res) => {
     try {
         const response = await alumni.create({
-            filename: req.file.filename,
-            fileid: req.file.id,
+            pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
+            pdfid: req.file.id,
             batch: req.body.batch,
         })
         console.log("alumni added successfully");

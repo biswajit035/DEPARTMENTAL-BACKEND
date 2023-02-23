@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const path = require("path");
 let port = process.env.PORT || 8000;
+var cors = require('cors')
 
 app.get('/', (req, res) => {
     res.send('Hello World!')

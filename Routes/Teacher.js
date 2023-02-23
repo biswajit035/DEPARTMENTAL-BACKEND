@@ -13,8 +13,8 @@ router.get("/",(req,res)=>{
 router.post("/add", upload.single('file'), async (req, res) => {
     try {
         const response = await teacher.create({
-            filename: req.file.filename,
-            fileid: req.file.id,
+            imageurl: `${process.env.host}/api/files/image/${req.file.filename}`,
+            imageid: req.file.id,
             name: req.body.fname,
             gender: req.body.gen,
             email: req.body.email,
