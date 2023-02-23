@@ -70,7 +70,7 @@ router.get("/image/:filename", async(req, res) => {
             //     const imageBase64 = `data:image/jpeg;base64,${buffer}`;
             //     res.json({ data: imageBase64 });
             // })
-            // res.setHeader('Content-Type', 'image/jpeg');
+            res.setHeader('Content-Type', 'image/jpeg');
             image.pipe(res);
         // });
     } catch (error) {
