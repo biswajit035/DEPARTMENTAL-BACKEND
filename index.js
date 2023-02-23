@@ -1,8 +1,6 @@
 const express = require('express')
 const app = express()
-const db = require("./db")
-var cors = require('cors')
-app.use(cors());
+const path = require("path");
 let port = process.env.PORT || 8000;
 
 app.get('/', (req, res) => {
