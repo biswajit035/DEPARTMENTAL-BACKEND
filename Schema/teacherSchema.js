@@ -26,11 +26,11 @@ const teacherSchema = new Schema({
         type: String,
         required: true
     },
-    filename: {
+    imageurl: {
         type: String,
         required: true
     },
-    fileid: {
+    imageid: {
         type: String,
         required: true
     }

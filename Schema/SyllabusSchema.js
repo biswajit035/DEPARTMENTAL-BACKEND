@@ -6,11 +6,11 @@ const syllabusSchema = new Schema({
         type: String,
         required: true
     },
-    filename: {
+    pdfid: {
         type: String,
         required: true
     },
-    fileid: {
+    pdfurl: {
         type: String,
         required: true
     }

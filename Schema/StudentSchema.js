@@ -6,11 +6,11 @@ const StudentSchema = new Schema({
         type: String,
         required: true
     },
-    filename: {
+    pdfurl: {
         type: String,
         required: true
     },
-    fileid: {
+    pdfid: {
         type: String,
         required: true
     }
