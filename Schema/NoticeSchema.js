@@ -2,7 +2,7 @@ const { mongoose } = require("mongoose");
 const { Schema } = mongoose
 
 const pdfSchema = new Schema({
-    batch: {
+    title: {
         type: String,
         required: true
     },
@@ -13,7 +13,11 @@ const pdfSchema = new Schema({
     pdfurl: {
         type: String,
         required: true
-    } 
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 module.exports = pdfSchema;

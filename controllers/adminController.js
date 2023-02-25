@@ -1,4 +1,4 @@
-const { teacher, student, syllabus, routine, alumni } = require('../Model/model')
+const { teacher, student, syllabus, routine, alumni,notice } = require('../Model/model')
 
 async function testUser(req, res, next) {
     return res.status(200).send({ msg: "Testing done" })
@@ -189,5 +189,40 @@ async function delalumni(req, res) {
     }
 };
 
+// ----------------------------------------        NOTICE             ----------------------------------------------------
+async function noticeFetch(req, res) {
+    try {
+        const response = await notice.find().sort({ batch: 1 });
+        res.send({ response });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+}
+async function noticeAdd(req, res) {
+    try {
+        const response = await notice.create({
+            pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
+            pdfid: req.file.id,
+            title: req.body.title,
+        })
+        res.status(200).send({ "msg": "notice has been added Successfully" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+};
+async function delnotice(req, res) {
+    try {
+        let ft = await notice.findById(req.params.id);
+        if (!ft)
+            return res.status(400).json({ "msg": "This notice list does not exists" })
+        ft = await notice.findByIdAndDelete(req.params.id)
+        res.status(200).send({ "msg": "notice has been deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+};
 
-module.exports = { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni }
+module.exports = { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni, noticeAdd, noticeFetch, delnotice }
