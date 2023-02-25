@@ -35,7 +35,7 @@ router.get("/fetch", async (req, res) => {
         res.status(500).send({ "msg": "Some error occured" });
     }
 })
-delete teacher 
+// delete teacher 
 router.delete("/delete/:id", async (req, res) => {
     let ft = await student.findById(req.params.id);
     if (!ft)

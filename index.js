@@ -5,16 +5,13 @@ let port = process.env.PORT || 8000;
 var cors = require('cors')
 app.use(cors());
 
+const router = require('./router/route.js');
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
-// teacher
-app.use('/api/teacher',require('./Routes/Teacher'))
-app.use('/api/student',require('./Routes/Students'))
-app.use('/api/syllabus',require('./Routes/Syllabus'))
-app.use('/api/routine',require('./Routes/Routine'))
-app.use('/api/alumni',require('./Routes/Alumni'))
-app.use('/api/files',require('./Routes/File'))
+
+
+app.use('/api', router)
 
 
 app.listen(port, () => {
