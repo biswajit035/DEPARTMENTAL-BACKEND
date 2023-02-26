@@ -204,7 +204,7 @@ async function noticeAdd(req, res) {
         const response = await notice.create({
             pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
             pdfid: req.file.id,
-            title: req.body.title,
+            title: req.body.batch,
         })
         res.status(200).send({ "msg": "notice has been added Successfully" });
     } catch (error) {
