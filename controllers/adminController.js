@@ -1,4 +1,4 @@
-const { teacher, student, syllabus, routine, alumni,notice } = require('../Model/model')
+const { teacher, student, syllabus, routine, alumni, notice, placement } = require('../Model/model')
 
 async function testUser(req, res, next) {
     return res.status(200).send({ msg: "Testing done" })
@@ -225,4 +225,91 @@ async function delnotice(req, res) {
     }
 };
 
-module.exports = { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni, noticeAdd, noticeFetch, delnotice }
+// ----------------------------------------        NOTICE             ----------------------------------------------------
+// ----------       year        -----------
+async function addYear(req, res) {
+    try {
+        const fyear = await placement.findOne({ year: req.body.year })
+        if (fyear)
+            return res.status(400).json({ "msg": "This year already exists" })
+        const ryear = await placement.create({
+            year: req.body.year
+        })
+        res.json(ryear)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+};
+async function yearFetch(req, res) {
+    try {
+        const response = await placement.find().sort({ year: 1 });
+        res.send({ response });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+}
+async function specificYearFetch(req, res) {
+    try {
+        const year = await placement.findOne({ year: req.params.id })
+        res.send(year)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+}
+async function deleteYear(req, res) {
+    try {
+        let fyear = await placement.findOne({ year: req.params.year });
+        if (!fyear)
+            return res.status(400).json({ "msg": "This year does not exists" })
+        fyear = await placement.findOneAndDelete({ year: req.params.year })
+        res.json({ "msg": "year has been deleted" })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+}
+// ----------       company        -----------
+async function addCompany(req, res) {
+    try {
+        const data = req.body;
+        let fyear = await placement.findOne({ year: req.params.year });
+        if (!fyear)
+            return res.status(400).json({ error: "This year does not exists" })
+        let fc = await placement.findOne({ year: req.params.year }, { records: { $elemMatch: { company: data.company } } }, { "records.$": 1 });
+        if (fc.records.length)
+            return res.status(400).json({ error: "This company has already been added" })
+            // return res.status(400).json(fc.records.length)
+        fyear = await placement.findOneAndUpdate({ year: req.params.year }, { $push: { records: data } }, { new: true });
+        res.status(200).send({ "msg": "company has been added Successfully" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+};
+async function deleteCompany(req, res) {
+    try {
+        let fyear = await placement.findOne({ year: req.params.year }, { "records._id": req.params.id }, { "records.$": 1 });
+        if (!fyear)
+            return res.status(400).json({ error: "This year does not exists" })
+        // let fc = await placement.findOne({ year: req.params.year }, { records: { $elemMatch: { _id: req.params.id } } }, { "records.$": 1 });
+        // if (!fc.records.length)
+        //     return res.status(400).json({ error: "This company has already been deleted" })
+            // return res.status(400).json(fc.records.length)
+        fyear = await placement.findOneAndUpdate({ year: req.params.year }, {
+            $pull: {
+                records: {
+                    _id: req.params.id
+                }
+            }
+        }, { new: true });
+        res.json({ "msg": "company has been deleted successfully" })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+}
+
+module.exports = { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni, noticeAdd, noticeFetch, delnotice, addYear, yearFetch, specificYearFetch, deleteYear, addCompany, deleteCompany }
