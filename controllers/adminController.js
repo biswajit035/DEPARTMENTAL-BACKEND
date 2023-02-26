@@ -192,7 +192,7 @@ async function delalumni(req, res) {
 // ----------------------------------------        NOTICE             ----------------------------------------------------
 async function noticeFetch(req, res) {
     try {
-        const response = await notice.find().sort({ batch: 1 });
+        const response = await notice.find().sort({ dateField: -1 });
         res.send({ response });
     } catch (error) {
         console.log(error);
@@ -204,7 +204,7 @@ async function noticeAdd(req, res) {
         const response = await notice.create({
             pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
             pdfid: req.file.id,
-            title: req.body.batch,
+            batch: req.body.batch,
         })
         res.status(200).send({ "msg": "notice has been added Successfully" });
     } catch (error) {
