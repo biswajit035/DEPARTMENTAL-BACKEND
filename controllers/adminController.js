@@ -192,7 +192,7 @@ async function delalumni(req, res) {
 // ----------------------------------------        NOTICE             ----------------------------------------------------
 async function noticeFetch(req, res) {
     try {
-        const response = await notice.find().sort({ dateField: -1 });
+        const response = await notice.find().sort({ date: -1 });
         res.send({ response });
     } catch (error) {
         console.log(error);
