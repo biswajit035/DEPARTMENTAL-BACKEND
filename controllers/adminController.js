@@ -114,10 +114,11 @@ async function syllabusFetch(req, res) {
 }
 async function syllabusAdd(req, res) {
     try {
+        const data = JSON.parse(JSON.stringify(req.body));
         const response = await syllabus.create({
             pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
             pdfid: req.file.id,
-            batch: req.body.batch,
+            batch: body.batch,
         })
         res.status(200).send({ "msg": "syllabus has been added Successfully" });
     } catch (error) {
@@ -153,10 +154,11 @@ async function routineFetch(req, res) {
 }
 async function routineAdd(req, res) {
     try {
+        const data = JSON.parse(JSON.stringify(req.body));
         const response = await routine.create({
             pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
             pdfid: req.file.id,
-            batch: req.body.batch,
+            batch: data.batch,
         })
         res.status(200).send({ "msg": "routine has been added Successfully" });
     } catch (error) {
@@ -192,10 +194,11 @@ async function alumniFetch(req, res) {
 }
 async function alumniAdd(req, res) {
     try {
+        const data = JSON.parse(JSON.stringify(req.body));
         const response = await alumni.create({
             pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
             pdfid: req.file.id,
-            batch: req.body.batch,
+            batch: data.batch,
         })
         res.status(200).send({ "msg": "alumni has been added Successfully" });
     } catch (error) {
@@ -231,10 +234,11 @@ async function noticeFetch(req, res) {
 }
 async function noticeAdd(req, res) {
     try {
+        const data = JSON.parse(JSON.stringify(req.body));
         const response = await notice.create({
             pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
             pdfid: req.file.id,
-            batch: req.body.batch,
+            batch: data.batch,
         })
         res.status(200).send({ "msg": "notice has been added Successfully" });
     } catch (error) {
