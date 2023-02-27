@@ -28,16 +28,17 @@ async function teacherFetch(req, res) {
 async function teacherAdd(req, res) {
     try {
         const data = JSON.parse(JSON.stringify(req.body));
-        const response = await teacher.create({
-            imageurl: `${process.env.host}/api/files/image/${req.file.filename}`,
-            imageid: req.file.id,
-            name: data.fname,
-            gender: data.gen,
-            email: data.email,
-            mobile: data.mno,
-            designation: data.desg,
-            education: data.edu,
-        })
+        // const response = await teacher.create({
+        //     imageurl: `${process.env.host}/api/files/image/${req.file.filename}`,
+        //     imageid: req.file.id,
+        //     name: data.fname,
+        //     gender: data.gen,
+        //     email: data.email,
+        //     mobile: data.mno,
+        //     designation: data.desg,
+        //     education: data.edu,
+        // })
+        console.log(data);
         res.status(200).send({ "msg": "Teacher has been added Successfully" });
     } catch (error) {
         console.log(error);
@@ -274,14 +275,14 @@ async function eventFetch(req, res) {
 }
 async function eventAdd(req, res) {
     try {
+        const data = JSON.parse(JSON.stringify(req.body));
         const filesToUpload = req.files
         const response = await event.create({
-            desc: req.body.desc,
+            desc: data.desc,
+            title: data.title
         })
         const upimg = () => {
             filesToUpload.forEach(async (file) => {
-                console.log(file);
-                // console.log(pt);
                 const pimage = await event.findByIdAndUpdate(response.id, {
                     $push: {
                         image: {
