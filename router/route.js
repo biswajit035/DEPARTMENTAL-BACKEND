@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router();
 const { upload } = require('../gridFs')
 
-const { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni, noticeAdd, noticeFetch, delnotice, addYear, yearFetch, specificYearFetch, deleteYear, addCompany, deleteCompany } = require('../controllers/adminController.js');
+const { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni, noticeAdd, noticeFetch, delnotice, addYear, yearFetch, specificYearFetch, deleteYear, addCompany, deleteCompany, eventAdd, eventFetch, deleteEvent } = require('../controllers/adminController.js');
 const { showPdf, showimage, showAll, delPdf } = require('../controllers/fileController.js');
 
 // router.route('/generateOTP').get(controller.verifyUser, localVariables, controller.generateOTP) // generate random OTP
@@ -37,6 +37,11 @@ router.route('/alumni/delete/:id').delete(upload.single('file'), delalumni)
 router.route('/notice/fetch').get(noticeFetch)
 router.route('/notice/add').post(upload.single('file'), noticeAdd)
 router.route('/notice/delete/:id').delete(upload.single('file'), delnotice)
+
+// Event
+router.route('/event/fetch').get(eventFetch)
+router.route('/event/add').post(upload.array('file',5), eventAdd)
+router.route('/event/delete/:id').delete(deleteEvent)
 
 // Placement
 router.route('/placement/year').get(yearFetch)

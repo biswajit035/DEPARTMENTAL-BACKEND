@@ -1,11 +1,22 @@
-const { teacher, student, syllabus, routine, alumni, notice, placement } = require('../Model/model')
+const { teacher, student, syllabus, routine, alumni, notice, placement, event } = require('../Model/model')
+const { conn } = require('../db')
+const mongoose = require("mongoose");
+
+
+
+let gfs;
+conn.once("open", () => {
+    gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: "uploads"
+    });
+});
 
 async function testUser(req, res, next) {
     return res.status(200).send({ msg: "Testing done" })
 }
 
 // ----------------------------------------        TEACHER             ----------------------------------------------------
-async function teacherFetch (req, res) {
+async function teacherFetch(req, res) {
     try {
         const tres = await teacher.find().sort({ fname: 1 });
         res.send({ tres });
@@ -14,7 +25,7 @@ async function teacherFetch (req, res) {
         res.status(500).send({ "msg": "Some error occured" });
     }
 }
-async function teacherAdd(req, res){
+async function teacherAdd(req, res) {
     try {
         const response = await teacher.create({
             imageurl: `${process.env.host}/api/files/image/${req.file.filename}`,
@@ -82,7 +93,7 @@ async function delStudent(req, res) {
 };
 
 // ----------------------------------------        SYLLABUS             ----------------------------------------------------
-async function syllabusFetch (req, res) {
+async function syllabusFetch(req, res) {
     try {
         const response = await syllabus.find().sort({ batch: 1 });
         res.send({ response });
@@ -118,7 +129,7 @@ async function delsyllabus(req, res) {
 };
 
 // ----------------------------------------        ROUTINE             ----------------------------------------------------
-async function routineFetch (req, res) {
+async function routineFetch(req, res) {
     try {
         const response = await routine.find().sort({ batch: 1 });
         res.send({ response });
@@ -225,7 +236,79 @@ async function delnotice(req, res) {
     }
 };
 
-// ----------------------------------------        NOTICE             ----------------------------------------------------
+// ----------------------------------------        EVENT             ----------------------------------------------------
+async function eventFetch(req, res) {
+    try {
+        const response = await event.find();
+        res.send({ response });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+}
+async function eventAdd(req, res) {
+    try {
+        const filesToUpload = req.files
+        const response = await event.create({
+            desc: req.body.desc,
+        })
+        const upimg = () => {
+            filesToUpload.forEach(async (file) => {
+                console.log(file);
+                // console.log(pt);
+                const pimage = await event.findByIdAndUpdate(response.id, {
+                    $push: {
+                        image: {
+                            imageurl: `${process.env.host}/api/files/image/${file.filename}`,
+                            imageid: file.id
+                        }
+                    }
+                }, { new: true })
+            })
+        }
+
+        upimg();
+        res.status(200).send(response);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+};
+async function deleteEvent(req, res) {
+    try {
+        let ft = await event.findById(req.params.id);
+        if (!ft)
+            return res.status(400).json({ "msg": "This event does not exists" })
+        const upimg = () => {
+            // deleting all image
+            ft.image.forEach(async (file) => {
+                gfs.delete(new mongoose.Types.ObjectId(file.imageid), (err, data) => {
+                    if (err) return res.status(404).json({ err: err.message });
+                })
+            })
+        }
+
+        upimg();
+
+        ft = await event.findByIdAndDelete(req.params.id)
+        res.status(200).send({ "msg": "event has been deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+}
+async function Event(req, res) {
+    try {
+        const filesToUpload = req.files
+        res.status(200).send(filesToUpload);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+};
+// ----------------------------------------        PLACEMENT             ----------------------------------------------------
 // ----------       year        -----------
 async function addYear(req, res) {
     try {
@@ -281,7 +364,7 @@ async function addCompany(req, res) {
         let fc = await placement.findOne({ year: req.params.year }, { records: { $elemMatch: { company: data.company } } }, { "records.$": 1 });
         if (fc.records.length)
             return res.status(400).json({ error: "This company has already been added" })
-            // return res.status(400).json(fc.records.length)
+        // return res.status(400).json(fc.records.length)
         fyear = await placement.findOneAndUpdate({ year: req.params.year }, { $push: { records: data } }, { new: true });
         res.status(200).send({ "msg": "company has been added Successfully" });
     } catch (error) {
@@ -297,7 +380,7 @@ async function deleteCompany(req, res) {
         // let fc = await placement.findOne({ year: req.params.year }, { records: { $elemMatch: { _id: req.params.id } } }, { "records.$": 1 });
         // if (!fc.records.length)
         //     return res.status(400).json({ error: "This company has already been deleted" })
-            // return res.status(400).json(fc.records.length)
+        // return res.status(400).json(fc.records.length)
         fyear = await placement.findOneAndUpdate({ year: req.params.year }, {
             $pull: {
                 records: {
@@ -312,4 +395,4 @@ async function deleteCompany(req, res) {
     }
 }
 
-module.exports = { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni, noticeAdd, noticeFetch, delnotice, addYear, yearFetch, specificYearFetch, deleteYear, addCompany, deleteCompany }
+module.exports = { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni, noticeAdd, noticeFetch, delnotice, addYear, yearFetch, specificYearFetch, deleteYear, addCompany, deleteCompany, eventAdd, eventFetch, deleteEvent }

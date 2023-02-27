@@ -16,7 +16,7 @@ const pdfSchema = new Schema({
     },
     date: {
         type: Date,
-        default: () => new Date().toISOString().slice(0, 10)
+        default: () => new Date()
     }
 })
 
