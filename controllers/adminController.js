@@ -27,15 +27,16 @@ async function teacherFetch(req, res) {
 }
 async function teacherAdd(req, res) {
     try {
+        const data = JSON.parse(JSON.stringify(req.body));
         const response = await teacher.create({
             imageurl: `${process.env.host}/api/files/image/${req.file.filename}`,
             imageid: req.file.id,
-            name: req.body.fname,
-            gender: req.body.gen,
-            email: req.body.email,
-            mobile: req.body.mno,
-            designation: req.body.desg,
-            education: req.body.edu,
+            name: data.fname,
+            gender: data.gen,
+            email: data.email,
+            mobile: data.mno,
+            designation: data.desg,
+            education: data.edu,
         })
         res.status(200).send({ "msg": "Teacher has been added Successfully" });
     } catch (error) {
@@ -72,12 +73,14 @@ async function studentFetch(req, res) {
 }
 async function studentAdd(req, res) {
     try {
+        const data = JSON.parse(JSON.stringify(req.body));
         const response = await student.create({
             pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
             pdfid: req.file.id,
-            batch: req.body.batch,
+            batch: data.batch,
         })
         res.status(200).send({ "msg": "Student has been added Successfully" });
+        
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });

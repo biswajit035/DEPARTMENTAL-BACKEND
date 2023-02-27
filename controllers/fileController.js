@@ -84,7 +84,28 @@ async function delPdf (req, res) {
         res.status(500).send({ "msg": "Some error occured" });
     }
 }
+// Delete chunks from the db
+async function delAll (req, res) {
+    try {
+        gfs.find().toArray(function (err, files) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            files.forEach(function (file) {
+                bucket.delete(file._id, function (err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            })})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ "msg": "Some error occured" });
+    }
+}
 
 
 
-module.exports = { showPdf, showimage, showAll, delPdf }
+module.exports = { showPdf, showimage, showAll, delPdf, delAll }

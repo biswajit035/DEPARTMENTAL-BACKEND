@@ -3,7 +3,7 @@ const router = express.Router();
 const { upload } = require('../gridFs')
 
 const { testUser, teacherFetch, teacherAdd, delTeacher, studentFetch, studentAdd, delStudent, syllabusFetch, syllabusAdd, delsyllabus, routineFetch, routineAdd, delroutine, alumniFetch, alumniAdd, delalumni, noticeAdd, noticeFetch, delnotice, addYear, yearFetch, specificYearFetch, deleteYear, addCompany, deleteCompany, eventAdd, eventFetch, deleteEvent } = require('../controllers/adminController.js');
-const { showPdf, showimage, showAll, delPdf } = require('../controllers/fileController.js');
+const { showPdf, showimage, showAll, delPdf, delAll } = require('../controllers/fileController.js');
 
 // router.route('/generateOTP').get(controller.verifyUser, localVariables, controller.generateOTP) // generate random OTP
 router.route('/').get(testUser)
@@ -57,5 +57,6 @@ router.route('/files').get(showAll)
 router.route('/files/pdf/:filename').get(showPdf)
 router.route('/files/image/:filename').get(showimage)
 router.route('/files/del/:id').delete(delPdf)
+router.route('/files/del/all').delete(delAll)
 
 module.exports = router
