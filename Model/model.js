@@ -4,6 +4,7 @@ const pdfSchema = require('../Schema/PdfSchema')
 const noticeSchema = require('../Schema/NoticeSchema')
 const placementSchema = require('../Schema/PlacementSchema')
 const eventSchema = require('../Schema/EvenetSchema')
+const userSchema = require('../Schema//UserSchema')
 
 
 const teacher = conn.model('teacherModel', teacherSchema)
@@ -14,6 +15,7 @@ const alumni = conn.model('alumnimodel', pdfSchema)
 const notice = conn.model('noticemodel', noticeSchema)
 const placement = conn.model('placementmodel', placementSchema)
 const event = conn.model('eventmodel', eventSchema)
+const user = conn.model('usermodel', userSchema)
 
 
-module.exports = { teacher, student, syllabus, routine, alumni, notice, placement,event }
+module.exports = { teacher, student, syllabus, routine, alumni, notice, placement,event,user }
