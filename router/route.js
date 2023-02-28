@@ -15,32 +15,32 @@ router.route('/').get(admin.testUser)
 // Teacher
 router.route('/teacher/fetch').get(admin.teacherFetch)
 router.route('/teacher/add').post(upload.single('file'), admin.teacherAdd)
-router.route('/teacher/delete/:id').delete(upload.single('file'), admin.delTeacher)
+router.route('/teacher/delete/:id').delete(admin.delTeacher)
 
 // Student
 router.route('/student/fetch').get(admin.studentFetch)
 router.route('/student/add').post(upload.single('file'), admin.studentAdd)
-router.route('/student/delete/:id').delete(upload.single('file'), admin.delStudent)
+router.route('/student/delete/:id').delete(admin.delStudent)
 
 // Syllabus
 router.route('/syllabus/fetch').get(admin.syllabusFetch)
 router.route('/syllabus/add').post(upload.single('file'), admin.syllabusAdd)
-router.route('/syllabus/delete/:id').delete(upload.single('file'), admin.delsyllabus)
+router.route('/syllabus/delete/:id').delete(admin.delsyllabus)
 
 // Routine
 router.route('/routine/fetch').get(admin.routineFetch)
 router.route('/routine/add').post(upload.single('file'), admin.routineAdd)
-router.route('/routine/delete/:id').delete(upload.single('file'), admin.delroutine)
+router.route('/routine/delete/:id').delete(admin.delroutine)
 
 // Alumni
 router.route('/alumni/fetch').get(admin.alumniFetch)
 router.route('/alumni/add').post(upload.single('file'), admin.alumniAdd)
-router.route('/alumni/delete/:id').delete(upload.single('file'), admin.delalumni)
+router.route('/alumni/delete/:id').delete(admin.delalumni)
 
 // Notice
 router.route('/notice/fetch').get(admin.noticeFetch)
 router.route('/notice/add').post(upload.single('file'), admin.noticeAdd)
-router.route('/notice/delete/:id').delete(upload.single('file'), admin.delnotice)
+router.route('/notice/delete/:id').delete(admin.delnotice)
 
 // Event
 router.route('/event/fetch').get(admin.eventFetch)

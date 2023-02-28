@@ -119,7 +119,7 @@ async function syllabusAdd(req, res) {
         const response = await syllabus.create({
             pdfurl: `${process.env.host}/api/files/pdf/${req.file.filename}`,
             pdfid: req.file.id,
-            batch: body.batch,
+            batch: data.batch,
         })
         res.status(200).send({ "msg": "syllabus has been added Successfully" });
     } catch (error) {
