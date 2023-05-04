@@ -1,30 +1,21 @@
 const { mongoose } = require("mongoose");
-const { Schema } = mongoose
 
-const UserSchema = new mongoose.Schema({
-    password: {
-        type: String,
-        required: [true, "Please provide a password"],
-        unique: false,
-    },
+const OtpSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true, "Please provide a unique email"],
         unique: [true, "Username Exist"]
     },
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
     otp: {
         type: Number,
         required: true
     },
-    createdAt: {
+    otpExpiration: {
         type: Date,
         required: true,
         default: Date.now(),
+        index: { expires: '1m' }
     }
 });
 
-module.exports = UserSchema;
+module.exports = OtpSchema;

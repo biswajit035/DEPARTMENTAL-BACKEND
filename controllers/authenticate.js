@@ -1,10 +1,14 @@
-const { teacher, user } = require('../Model/model')
+const { teacher, user, Otp } = require('../Model/model')
 const { conn } = require('../db')
 const mongoose = require("mongoose");
 const otpGenerator = require('otp-generator');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const OTP_EXPIRY = 10 * 60 * 1000; // 10 minutes in milliseconds
+const createdAt = new Date();
+
+
 
 
 
@@ -46,67 +50,101 @@ async function generateOTP(req, res) {
 }
 
 async function verifyOTP(req, res) {
-    const { code } = req.method == "GET" ? req.query : req.body;
-    if (parseInt(req.app.locals.OTP) === parseInt(code)) {
-        req.app.locals.OTP = null; // reset the OTP value
-        req.app.locals.resetSession = true; // start session for reset password
-        return res.status(201).send({ msg: 'Verify Successsfully!' })
-    }
-    return res.status(400).send({ error: "Invalid OTP" });
+    // destructuring data
+    const { email, otp } = req.body;
+
+    console.log("verify");
+    try {
+        const fuser = await user.findOne({ email: email });
+
+        // User doesn't exists
+        if (!fuser) {
+            console.log("user does not exists");
+            return res.status(401).send({ msg: "user does not exist" });
+        }
+        
+        // user is already verified
+        if (fuser.isVerified) {
+            console.log("already password");
+            return res.status(404).send({ msg: "You already hava a password!" });
+        }
+        
+        // otp expired
+        if (createdAt - fuser.createdAt > OTP_EXPIRY )
+        {
+            console.log("expired");
+            return res.status(401).send({ msg: "OTP expired" }); 
+        }
+
+        // invalid otp
+        if (fuser.otp != otp) {
+            console.log("invalid otp");
+            return res.status(400).send({ msg: "Invalid OTP" });
+        }
+
+        // otp verified
+        if (otp == fuser.otp) {
+            fuser.isVerified = true;
+            fuser.save((err, updatedUser) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                console.log("otp is verified");
+            });
+        }
+
+} catch (error) {
+    console.log(error);
+}
 }
 
 async function createPassword(req, res) {
+    console.log("signup called");
+    const { email, password } = req.body;
+    const otp = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+    console.log(otp);
+    //     if (!req.app.locals.resetSession) return res.status(440).send({ error: "Session expired!" });
+
+    //     const { email, password } = req.body;
+    //     if (password.length < 8) {
+    //         return res.status(404).send({ msg: "password must be of atleast 8 characters" });
+    //     }
     try {
-
-        if (!req.app.locals.resetSession) return res.status(440).send({ error: "Session expired!" });
-
-        const { email, password } = req.body;
-        if (password.length < 8) {
-            return res.status(404).send({ msg: "password must be of atleast 8 characters" });
-        }
-        try {
-
-            user.findOne({ email })
-                .then(user => {
-                    if (user.password != "") {
-                        req.app.locals.resetSession = false;
-                        return res.status(404).send({ msg: "You already hava a password!" });
-                    }
-                    
-                })
-                .catch(error => {
-                    bcrypt.hash(password, 10)
-                        .then(hashedPassword => {
-                            const newUser = new user({
-                                email: email,
-                                password: hashedPassword
+        user.findOne({ email })
+            .then(user => {
+                if (user.password != "") {
+                    // req.app.locals.resetSession = false;
+                    return res.status(404).send({ msg: "You already hava a password!" });
+                }
+            })
+            .catch(error => {
+                bcrypt.hash(password, 10)
+                    .then(hashedPassword => {
+                        const newUser = new user({ email, password: hashedPassword, otp, createdAt });
+                        newUser.save()
+                            .then(() => {
+                                // req.app.locals.resetSession = false; // reset session
+                                // return res.status(201).send({ msg: "your password created... !"+newUser })
+                                return res.status(201).send({ msg: "verify your otp" })
                             });
-                            newUser.save()
-                                .then(() => {
-                                    req.app.locals.resetSession = false; // reset session
-                                    return res.status(201).send({ msg: "your password created... !"+newUser })
-                                });
+                    })
+                    .catch(e => {
+                        return res.status(500).send({
+                            error: "Unable to hashed password"
                         })
-                        .catch(e => {
-                            return res.status(500).send({
-                                error: "Unable to hashed password"
-                            })
-                        })
-                })
-
-        } catch (error) {
-            return res.status(500).send({ error })
-        }
+                    })
+            })
 
     } catch (error) {
-        return res.status(401).send({ error })
+        return res.status(500).send({ error })
     }
+
 }
 
 async function resetPassword(req, res) {
     try {
 
-        if (!req.app.locals.resetSession) return res.status(440).send({ error: "Session expired!" });
 
         const { email, password } = req.body;
 
@@ -144,33 +182,46 @@ async function resetPassword(req, res) {
 
 async function login(req, res) {
 
+
+
     const { email, password } = req.body;
+    console.log(req.body);
 
     try {
-
         user.findOne({ email })
             .then(fuser => {
                 bcrypt.compare(password, fuser.password)
                     .then(passwordCheck => {
+                        if(!passwordCheck)
+                        {
+                            console.log("wrong credentials");
+                            return res.status(400).send({ error: "Wrong credentials" });
+                        }
 
-                        if (!passwordCheck) return res.status(400).send({ error: "Don't have Password" });
+                        if(!fuser.isVerified)
+                        {
+                            console.log("not verified");
+                            return res.status(400).send({ error: "You are not verified" });
+                        }
 
                         // create jwt token
-                        const token = jwt.sign({
-                            userId: user._id,
-                            username: user.username
-                        }, process.env.JWT_SECRET);
-                        res.cookie("jwttoken", token, {
-                            expires: new Date(Date.now() + 12000000),
-                            httpOnly: true
-                        });
-                        return res.status(200).send({
-                            msg: "Login Successful...!",
-                            email: fuser.email,
-                            token
-                        });
+                        // const token = jwt.sign({
+                        //     userId: user._id,
+                        //     username: user.username
+                        // }, process.env.JWT_SECRET);
+                        // res.cookie("jwttoken", token, {
+                        //     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                        //     httpOnly: true
+                        // });
+                        // return res.status(200).send({
+                        //     msg: "Login Successful...!",
+                        //     email: fuser.email,
+                        //     token
+                        // });
+                        console.log("done");
                     })
                     .catch(error => {
+                        console.log("password");
                         return res.status(400).send({ error: "Password does not Match" })
                     })
             })

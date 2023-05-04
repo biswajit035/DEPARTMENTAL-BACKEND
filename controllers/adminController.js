@@ -19,7 +19,7 @@ async function testUser(req, res, next) {
 async function teacherFetch(req, res) {
     try {
         const tres = await teacher.find().sort({ fname: 1 });
-        res.send({ tres });
+        res.status(201).send({ tres });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -38,7 +38,6 @@ async function teacherAdd(req, res) {
             designation: data.desg,
             education: data.edu,
         })
-        // console.log(data);
         res.status(200).send({ "msg": "Teacher has been added Successfully" });
     } catch (error) {
         console.log(error);
@@ -49,13 +48,15 @@ async function delTeacher(req, res) {
     try {
         let ft = await teacher.findById(req.params.id);
         if (!ft)
-            return res.status(400).json({ "msg": "teacher does not exists" })
+            return res.status(400).json({ "msg": "Teacher does not exists" })
+        // delte teacher pic
         ft = await gfs.delete(new mongoose.Types.ObjectId(ft.imageid), (err, data) => {
-                if (err) return res.status(404).json({ err: err.message });
-            })
+            if (err) return res.status(404).json({ err: err.message });
+        })
+        // delete teacher model
         ft = await teacher.findByIdAndDelete(req.params.id)
         res.status(200).send({ "msg": "Teacher has been deleted successfully" });
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -66,7 +67,7 @@ async function delTeacher(req, res) {
 async function studentFetch(req, res) {
     try {
         const response = await student.find().sort({ batch: 1 });
-        res.send({ response });
+        res.status(200).send({ response });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -81,7 +82,7 @@ async function studentAdd(req, res) {
             batch: data.batch,
         })
         res.status(200).send({ "msg": "Student has been added Successfully" });
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -92,11 +93,13 @@ async function delStudent(req, res) {
         let ft = await student.findById(req.params.id);
         if (!ft)
             return res.status(400).json({ "msg": "student does not exists" })
+        // delete file
         ft = await gfs.delete(new mongoose.Types.ObjectId(ft.pdfid), (err, data) => {
             if (err) return res.status(404).json({ err: err.message });
         })
+        // delete model
         ft = await student.findByIdAndDelete(req.params.id)
-        res.status(200).send({ "msg": "Teacher has been deleted successfully" });
+        res.status(200).send({ "msg": "student has been deleted successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -107,7 +110,7 @@ async function delStudent(req, res) {
 async function syllabusFetch(req, res) {
     try {
         const response = await syllabus.find().sort({ batch: 1 });
-        res.send({ response });
+        res.status(200).send({ response });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -136,7 +139,7 @@ async function delsyllabus(req, res) {
             if (err) return res.status(404).json({ err: err.message });
         })
         ft = await syllabus.findByIdAndDelete(req.params.id)
-        res.status(200).send({ "msg": "Teacher has been deleted successfully" });
+        res.status(200).send({ "msg": "Syllabus has been deleted successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -147,7 +150,7 @@ async function delsyllabus(req, res) {
 async function routineFetch(req, res) {
     try {
         const response = await routine.find().sort({ batch: 1 });
-        res.send({ response });
+        res.status(200).send({ response });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -161,7 +164,7 @@ async function routineAdd(req, res) {
             pdfid: req.file.id,
             batch: data.batch,
         })
-        res.status(200).send({ "msg": "routine has been added Successfully" });
+        res.status(200).send({ "msg": "Routine has been added Successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -171,12 +174,12 @@ async function delroutine(req, res) {
     try {
         let ft = await routine.findById(req.params.id);
         if (!ft)
-            return res.status(400).json({ "msg": "routine does not exists" })
+            return res.status(400).json({ "msg": "Routine does not exists" })
         ft = await gfs.delete(new mongoose.Types.ObjectId(ft.pdfid), (err, data) => {
             if (err) return res.status(404).json({ err: err.message });
         })
         ft = await routine.findByIdAndDelete(req.params.id)
-        res.status(200).send({ "msg": "Teacher has been deleted successfully" });
+        res.status(200).send({ "msg": "Routine has been deleted successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -187,7 +190,7 @@ async function delroutine(req, res) {
 async function alumniFetch(req, res) {
     try {
         const response = await alumni.find().sort({ batch: 1 });
-        res.send({ response });
+        res.status(200).send({ response });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -201,7 +204,7 @@ async function alumniAdd(req, res) {
             pdfid: req.file.id,
             batch: data.batch,
         })
-        res.status(200).send({ "msg": "alumni has been added Successfully" });
+        res.status(200).send({ "msg": "Alumni has been added Successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -211,10 +214,12 @@ async function delalumni(req, res) {
     try {
         let ft = await alumni.findById(req.params.id);
         if (!ft)
-            return res.status(400).json({ "msg": "alumni does not exists" })
+            return res.status(400).json({ "msg": "Alumni does not exists" })
+            // delete file
         ft = await gfs.delete(new mongoose.Types.ObjectId(ft.pdfid), (err, data) => {
             if (err) return res.status(404).json({ err: err.message });
         })
+        // delete model
         ft = await alumni.findByIdAndDelete(req.params.id)
         res.status(200).send({ "msg": "Teacher has been deleted successfully" });
     } catch (error) {
@@ -227,7 +232,7 @@ async function delalumni(req, res) {
 async function noticeFetch(req, res) {
     try {
         const response = await notice.find().sort({ date: -1 });
-        res.send({ response });
+        res.status(200).send({ response });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -241,7 +246,7 @@ async function noticeAdd(req, res) {
             pdfid: req.file.id,
             batch: data.batch,
         })
-        res.status(200).send({ "msg": "notice has been added Successfully" });
+        res.status(200).send({ "msg": "Notice has been added Successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -251,12 +256,14 @@ async function delnotice(req, res) {
     try {
         let ft = await notice.findById(req.params.id);
         if (!ft)
-            return res.status(400).json({ "msg": "notice does not exists" })
+            return res.status(400).json({ "msg": "Notice does not exists" })
+            // delete files
         ft = await gfs.delete(new mongoose.Types.ObjectId(ft.pdfid), (err, data) => {
             if (err) return res.status(404).json({ err: err.message });
         })
+        delete model
         ft = await notice.findByIdAndDelete(req.params.id)
-        res.status(200).send({ "msg": "Teacher has been deleted successfully" });
+        res.status(200).send({ "msg": "Notice has been deleted successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -266,8 +273,8 @@ async function delnotice(req, res) {
 // ----------------------------------------        EVENT             ----------------------------------------------------
 async function eventFetch(req, res) {
     try {
-        const response = await event.find();
-        res.send({ response });
+        const response = await event.find().sort({ date: -1 });
+        res.status(200).send({ response });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -295,6 +302,7 @@ async function eventAdd(req, res) {
         }
 
         upimg();
+        console.log(response);
         res.status(200).send(response);
 
     } catch (error) {
@@ -404,10 +412,6 @@ async function deleteCompany(req, res) {
         let fyear = await placement.findOne({ year: req.params.year }, { "records._id": req.params.id }, { "records.$": 1 });
         if (!fyear)
             return res.status(400).json({ error: "This year does not exists" })
-        // let fc = await placement.findOne({ year: req.params.year }, { records: { $elemMatch: { _id: req.params.id } } }, { "records.$": 1 });
-        // if (!fc.records.length)
-        //     return res.status(400).json({ error: "This company has already been deleted" })
-        // return res.status(400).json(fc.records.length)
         fyear = await placement.findOneAndUpdate({ year: req.params.year }, {
             $pull: {
                 records: {

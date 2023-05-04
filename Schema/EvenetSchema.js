@@ -1,5 +1,6 @@
 const { mongoose } = require("mongoose");
 const { Schema } = mongoose
+const moment = require('moment');
 
 const EventSchema = new Schema({
     desc: {
@@ -19,7 +20,11 @@ const EventSchema = new Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    date: {
+        type: Date,
+        default: moment().toDate()
+    }
 }, {
     autoIndex: false
 })

@@ -33,7 +33,7 @@ router.post("/add", upload.single('file'), async (req, res) => {
 // get teacher [/api/teacher/fetch]
 router.get("/fetch", async (req, res) => {
     try {
-        const tres = await teacher.find().sort({ fname: 1 });
+        const tres = await teacher.find();
         res.send({ tres });
     } catch (error) {
         console.log(error);
