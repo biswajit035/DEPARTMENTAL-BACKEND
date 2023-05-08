@@ -54,7 +54,7 @@ const registerMail = (req, res) => {
             msg: "you should receive an email"
         })
     }).catch(error => {
-        return res.status(500).json({ error })
+        return res.status(500).json({"msg": error })
     })
 }
 

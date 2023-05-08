@@ -2,6 +2,10 @@ const { mongoose } = require("mongoose");
 const { Schema } = mongoose
 
 const UserSchema = new mongoose.Schema({
+    tId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
+    },
     password: {
         type: String,
         required: [true, "Please provide a password"],
@@ -11,6 +15,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide a unique email"],
         unique: [true, "Username Exist"]
+    },
+    name: {
+        type: String,
+        required: [true, "Please provide a name"],
     },
     isVerified: {
         type: Boolean,

@@ -77,6 +77,6 @@ router.route('/verifyOTP').post( controller.verifyOTP) // verify generated OTP
 /** PUT Methods */
 // router.route('/createPassword').post(controller.verifyUser,controller.createPassword);
 router.route('/createPassword').post(controller.createPassword);
-router.route('/resetPassword').put(controller.verifyUser, controller.resetPassword);
+router.route('/resetPassword').put( controller.resetPassword);
 
 module.exports = router

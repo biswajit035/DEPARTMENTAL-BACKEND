@@ -6,11 +6,11 @@ const path = require("path");
 
 
 
-
 // Storage
 const storage = new GridFsStorage({
-    url: mongoURI,
+    url: mongoURI,  
     file: (req, file) => {
+        console.log(file);
         return new Promise((resolve, reject) => {
             crypto.randomBytes(16, (err, buf) => {
                 if (err) {
@@ -28,7 +28,10 @@ const storage = new GridFsStorage({
 });
 
 const upload = multer({
-    storage
+    storage,
+    limits: {
+        fileSize: 30 * 1024 * 1024, // 30MB
+    },
 });
 
 

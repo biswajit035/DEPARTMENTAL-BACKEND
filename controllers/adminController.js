@@ -1,4 +1,6 @@
 const { teacher, student, syllabus, routine, alumni, notice, placement, event } = require('../Model/model')
+const { user } = require('../Model/model')
+
 const { conn } = require('../db')
 const mongoose = require("mongoose");
 
@@ -55,6 +57,9 @@ async function delTeacher(req, res) {
         })
         // delete teacher model
         ft = await teacher.findByIdAndDelete(req.params.id)
+        //delete user model
+        ft = await user.findOneAndDelete({tId: req.params.id})
+
         res.status(200).send({ "msg": "Teacher has been deleted successfully" });
 
     } catch (error) {
@@ -221,7 +226,7 @@ async function delalumni(req, res) {
         })
         // delete model
         ft = await alumni.findByIdAndDelete(req.params.id)
-        res.status(200).send({ "msg": "Teacher has been deleted successfully" });
+        res.status(200).send({ "msg": "Alumni has been deleted successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
@@ -280,6 +285,7 @@ async function eventFetch(req, res) {
         res.status(500).send({ "msg": "Some error occured" });
     }
 }
+
 async function eventAdd(req, res) {
     try {
         const data = JSON.parse(JSON.stringify(req.body));
@@ -288,6 +294,7 @@ async function eventAdd(req, res) {
             desc: data.desc,
             title: data.title
         })
+        console.log(filesToUpload);
         const upimg = () => {
             filesToUpload.forEach(async (file) => {
                 const pimage = await event.findByIdAndUpdate(response.id, {
@@ -302,8 +309,7 @@ async function eventAdd(req, res) {
         }
 
         upimg();
-        console.log(response);
-        res.status(200).send(response);
+        res.status(200).send({"msg":"Event has been added"});
 
     } catch (error) {
         console.log(error);
@@ -353,7 +359,8 @@ async function addYear(req, res) {
         const ryear = await placement.create({
             year: req.body.year
         })
-        res.json(ryear)
+        // res.status(200).json(ryear)
+        res.status(200).json({"msg":"Year has been added"})
     } catch (error) {
         console.log(error);
         res.status(500).send({ "msg": "Some error occured" });
