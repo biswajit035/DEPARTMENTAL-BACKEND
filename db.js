@@ -17,5 +17,12 @@ conn.on('error', (err) => {
     console.log('MongoDB connection error: ' + err);
 });
 
+let gfs;
+conn.once("open", () => {
+    gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: "uploads"
+    });
+    console.log("GridFSBucket initialized successfully");
+});
 
-module.exports = { conn, mongoURI }
+module.exports = { conn, mongoURI, gfs }
