@@ -1,28 +1,28 @@
-const { conn,gfs } = require('../db')
+const { conn } = require('../db')
 const mongoose = require("mongoose");
 
 
 
-// let gfs;
-// conn.once("open", () => {
-//     gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-//         bucketName: "uploads"
-//     });
-// });
+let gfs;
+conn.once("open", () => {
+    gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: "uploads"
+    });
+});
 
 
 
 async function showPdf (req, res) {
     try {
-        gfs.find({
-            filename: req.params.filename
-        }).toArray(async (err, files) => {
-            // check if files
-            if (!files || files.length === 0) {
-                return res.status(404).json({
-                    err: "no files exist in"
-                });
-            }
+        // gfs.find({
+        //     filename: req.params.filename
+        // }).toArray(async (err, files) => {
+        //     // check if files
+        //     if (!files || files.length === 0) {
+        //         return res.status(404).json({
+        //             err: "no files exist in"
+        //         });
+        //     }
 
             const pdf = await gfs.openDownloadStreamByName(req.params.filename);
             res.setHeader('Content-Type', 'application/pdf');
