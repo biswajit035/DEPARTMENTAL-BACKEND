@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 
 
-let gfs;
+const gfs;
 conn.once("open", () => {
     gfs = new mongoose.mongo.GridFSBucket(conn.db, {
         bucketName: "uploads"
