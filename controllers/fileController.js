@@ -1,4 +1,4 @@
-const { conn.gfs } = require('../db')
+const { conn,gfs } = require('../db')
 const mongoose = require("mongoose");
 
 
