@@ -3,13 +3,26 @@ const mongoose = require("mongoose");
 
 
 
-let gfs;
-conn.once("open", () => {
-    gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-        bucketName: "uploads"
-    });
-});
+// let gfs;
+// conn.once("open", () => {
+//     gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+//         bucketName: "uploads"
+//     });
+// });
 
+const gfsPromise = new Promise((resolve, reject) => {
+  conn.once("open", () => {
+    const gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+      bucketName: "uploads"
+    });
+    resolve(gfs);
+  });
+
+  conn.on("error", (error) => {
+    reject(error);
+  });
+});
+const gfs = await gfsPromise;
 
 async function showPdf (req, res) {
     try {
