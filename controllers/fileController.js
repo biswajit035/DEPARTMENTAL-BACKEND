@@ -14,15 +14,15 @@ conn.once("open", () => {
 
 async function showPdf (req, res) {
     try {
-        // gfs.find({
-        //     filename: req.params.filename
-        // }).toArray(async (err, files) => {
-        //     // check if files
-        //     if (!files || files.length === 0) {
-        //         return res.status(404).json({
-        //             err: "no files exist in"
-        //         });
-        //     }
+        gfs.find({
+            filename: req.params.filename
+        }).toArray(async (err, files) => {
+            // check if files
+            if (!files || files.length === 0) {
+                return res.status(404).json({
+                    err: "no files exist in"
+                });
+            }
 
             const pdf = await gfs.openDownloadStreamByName(req.params.filename);
             res.setHeader('Content-Type', 'application/pdf');
@@ -36,15 +36,15 @@ async function showPdf (req, res) {
 
 async function showimage(req, res) {
     try {
-        // gfs.find({
-        //     filename: req.params.filename
-        // }).toArray(async (err, files) => {
-        //     // check if files
-        //     if (!files || files.length === 0) {
-        //         return res.status(404).json({
-        //             err: "no files exist in"
-        //         });
-        //     }
+        gfs.find({
+            filename: req.params.filename
+        }).toArray(async (err, files) => {
+            // check if files
+            if (!files || files.length === 0) {
+                return res.status(404).json({
+                    err: "no files exist in"
+                });
+            }
 
             const image = await gfs.openDownloadStreamByName(req.params.filename);
             res.setHeader('Content-Type', 'image/jpeg');
